@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  node:
+     build: .
+     container_name: nodejs-docker
+     working_dir: "/my-app"
+     depends_on: 
+      - jdk
+     volumes:
+       - .:/my-app
+       - jdk-volume:/opt/openjdk-14/
+  jdk:
+     build:
+       context: .
+       dockerfile: jdk.Dockerfile
+     container_name: openjdk-docker
+     working_dir: "/my-app"
+     volumes:
+       - .:/my-app
+       - jdk-volume:/opt/openjdk-14/
+volumes: 
+  jdk-volume:

@@ -1,0 +1,2 @@
+#!/bin/bash
+docker run nativescript_jdk java "$@"
