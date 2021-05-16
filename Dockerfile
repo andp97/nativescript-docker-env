@@ -94,12 +94,22 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
   # smoke test
   && yarn --version
 
+RUN apk add git
 RUN npm install -g nativescript
+RUN npm install -g @nativescript/android
 
-RUN apk add docker
+RUN apk add openjdk14 --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/
+RUN apk add openjdk14-jre-headless --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/
 
-#RUN echo -e '#!/bin/sh\ndocker run nativescript_jdk java "$@"' >> /usr/local/bin/java && chmod +x /usr/local/bin/java
-#RUN echo -e '#!/bin/sh\ndocker run nativescript_jdk javac "$@"' >> /usr/local/bin/javac && chmod +x /usr/local/bin/javac
+ENV ANDROID_HOME "/opt/android-sdk-linux"
 
-ENV JAVA_HOME "/opt/openjdk-14"
-ENV PATH "$JAVA_HOME/bin:$PATH"
+RUN cd /tmp && wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip && \
+unzip platform-tools-latest-linux.zip && \
+mv /tmp/platform-tools $ANDROID_HOME
+
+RUN cd /tmp && wget https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip && \
+unzip commandlinetools-linux-7302050_latest.zip && rm commandlinetools-linux-7302050_latest.zip 
+RUN mv /tmp/cmdline-tools/ /opt/cmdline-tools/
+
+ENV PATH "$PATH:$ANDROID_HOME/platform-tools"
+ENV JAVA_HOME "/usr/lib/jvm/java-14-openjdk"
